@@ -1,0 +1,48 @@
+services:
+  unsdb:
+    image: 'mongo'
+    volumes:
+      - unsdata:/data/db
+    networks:
+      - uns
+  uns1:
+    build: 
+      context: ./uns
+      dockerfile: Dockerfile
+    environment:
+      - PORT=80
+      - MONGO_HOST=unsdb
+    ports:
+      - '6968:80'
+    depends_on:
+      - unsdb
+    networks:
+      - uns
+  uns2:
+    build: 
+      context: ./uns
+      dockerfile: Dockerfile
+    environment:
+      - PORT=80
+      - MONGO_HOST=unsdb
+    ports:
+      - '6969:80'
+    depends_on:
+      - unsdb
+    networks:
+      - uns
+  uns:
+    image: nginx:latest
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    depends_on:
+      - uns1
+      - uns2
+    ports:
+      - '6970:80'
+    networks:
+      - uns
+volumes:
+  unsdata:
+networks:
+  uns:
