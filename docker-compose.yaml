@@ -6,9 +6,7 @@ services:
     networks:
       - uns
   uns1:
-    build: 
-      context: ./uns
-      dockerfile: Dockerfile
+    image: ele7ija/cc:uns
     environment:
       - PORT=80
       - MONGO_HOST=unsdb
@@ -19,9 +17,7 @@ services:
     networks:
       - uns
   uns2:
-    build: 
-      context: ./uns
-      dockerfile: Dockerfile
+    image: ele7ija/cc:uns
     environment:
       - PORT=80
       - MONGO_HOST=unsdb
@@ -55,8 +51,7 @@ services:
     networks:
       - pmf
   pmf:
-    build:
-      context: ./django-app
+    image: ele7ija/cc:fakultet
     environment:
       - DB_HOST=pmfdb
       - UNS_HOST=uns
@@ -82,8 +77,7 @@ services:
     networks:
       - ftn
   ftn:
-    build:
-      context: ./django-app
+    image: ele7ija/cc:fakultet
     environment:
       - DB_HOST=ftndb
       - UNS_HOST=uns
@@ -109,8 +103,7 @@ services:
     networks:
       - pravni
   pravni:
-    build:
-      context: ./django-app
+    image: ele7ija/cc:fakultet
     environment:
       - DB_HOST=pravnidb
       - UNS_HOST=uns
