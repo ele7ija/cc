@@ -42,7 +42,35 @@ services:
       - '6970:80'
     networks:
       - uns
+
+  mysitedb:
+    image: 'postgres'
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mysite
+  backend:
+    build:
+      context: ./django-app
+    environment:
+      - DB_HOST=mysitedb
+      - UNS_HOST=uns
+      - FAKULTET=Prirodno matematicki fakultet
+    ports:
+      - '6999:8081'
+    depends_on:
+      mysitedb:
+        condition: service_healthy
+    networks:
+      - uns
+      - mysite
 volumes:
   unsdata:
 networks:
   uns:
+  mysite:

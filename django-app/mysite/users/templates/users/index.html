@@ -1,0 +1,39 @@
+<h1>{{ fakultet }}</h1>
+
+{% if users %}
+    <ul>
+    {% for user in users %}
+        <li><a href="{% url 'user' user.id %}">{{ user.ime }} {{user.prezime}}: {{user.jmbg}} {% if user.je_student %}STUDENT{% else %}PROFESOR{% endif %}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Nema registrovanih korisnika.</p>
+{% endif %}
+
+<form action="{% url 'register_student' %}" method="post">
+{% csrf_token %}
+<fieldset>
+    <legend><h1>Registracija studenta</h1></legend>
+        <input type="text" name="ime" id="ime">
+        <label for="ime">Ime</label><br>
+        <input type="text" name="prezime" id="prezime">
+        <label for="prezime">Prezime</label><br>
+        <input type="text" name="jmbg" id="jmbg">
+        <label for="jmbg">JMBG</label><br>
+</fieldset>
+<input type="submit" value="Registruj">
+</form>
+
+<form action="{% url 'register_prof' %}" method="post">
+{% csrf_token %}
+<fieldset>
+    <legend><h1>Registracija profesora</h1></legend>
+        <input type="text" name="ime" id="ime">
+        <label for="ime">Ime</label><br>
+        <input type="text" name="prezime" id="prezime">
+        <label for="prezime">Prezime</label><br>
+        <input type="text" name="jmbg" id="jmbg">
+        <label for="jmbg">JMBG</label><br>
+</fieldset>
+<input type="submit" value="Registruj">
+</form>
