@@ -43,7 +43,7 @@ services:
     networks:
       - uns
 
-  mysitedb:
+  pmfdb:
     image: 'postgres'
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -53,24 +53,80 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - mysite
-  backend:
+      - pmf
+  pmf:
     build:
       context: ./django-app
     environment:
-      - DB_HOST=mysitedb
+      - DB_HOST=pmfdb
       - UNS_HOST=uns
       - FAKULTET=Prirodno matematicki fakultet
     ports:
-      - '6999:8081'
+      - '7010:8081'
     depends_on:
-      mysitedb:
+      pmfdb:
         condition: service_healthy
     networks:
       - uns
-      - mysite
+      - pmf
+
+  ftndb:
+    image: 'postgres'
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ftn
+  ftn:
+    build:
+      context: ./django-app
+    environment:
+      - DB_HOST=ftndb
+      - UNS_HOST=uns
+      - FAKULTET=Fakultet tehnickih nauka
+    ports:
+      - '7011:8081'
+    depends_on:
+      ftndb:
+        condition: service_healthy
+    networks:
+      - uns
+      - ftn
+
+  pravnidb:
+    image: 'postgres'
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pravni
+  pravni:
+    build:
+      context: ./django-app
+    environment:
+      - DB_HOST=pravnidb
+      - UNS_HOST=uns
+      - FAKULTET=Pravni fakultet
+    ports:
+      - '7012:8081'
+    depends_on:
+      pmfdb:
+        condition: service_healthy
+    networks:
+      - uns
+      - pravni
 volumes:
   unsdata:
 networks:
   uns:
-  mysite:
+  pmf:
+  ftn:
+  pravni:
