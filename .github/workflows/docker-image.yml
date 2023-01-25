@@ -1,0 +1,32 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: docker login
+      env: 
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    # UNS app.
+    - name: Build UNS docker image
+      run: docker build ./uns --tag ${{secrets.DOCKER_USER}}/cc:uns
+    - name: Push UNS docker image
+      run: docker push ${{secrets.DOCKER_USER}}/cc:uns
+    # Fakultet app.
+    - name: Build Fakultet docker image
+      run: docker build ./django-app --tag ${{secrets.DOCKER_USER}}/cc:fakultet
+    - name: Push Fakultet docker image
+      run: docker push ${{secrets.DOCKER_USER}}/cc:fakultet
